@@ -12,7 +12,8 @@
     "db:studio": "drizzle-kit studio",
     "lint:fix": "eslint --fix src --ext .ts",
     "test": "bun test src/domain/user-cases",
-    "test:e2e": "bun test src/infra/http"
+    "test:e2e": "bun test src/infra/http",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@dudubernardino/eslint-config": "^0.0.1",
@@ -22,7 +23,9 @@
     "chalk": "^5.3.0",
     "drizzle-kit": "^0.23.0",
     "eslint": "^8.56.0",
-    "eslint-plugin-drizzle": "^0.2.3"
+    "eslint-plugin-drizzle": "^0.2.3",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.8"
   },
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
@@ -30,5 +33,14 @@
     "elysia": "^1.1.4",
     "postgres": "^3.4.4",
     "zod": "^3.23.8"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{md,json}": [
+      "prettier -w"
+    ]
   }
 }
