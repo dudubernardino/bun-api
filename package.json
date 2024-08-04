@@ -1,0 +1,34 @@
+{
+  "name": "laionpedia-api",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/infra/http/server.ts",
+    "build": "bun build src/infra/http/server.ts",
+    "start": "NODE_ENV=production bun src/http/server.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "bun ./src/infra/database/drizzle/seed.ts",
+    "db:studio": "drizzle-kit studio",
+    "lint:fix": "eslint --fix src --ext .ts",
+    "test": "bun test src/domain/user-cases",
+    "test:e2e": "bun test src/infra/http"
+  },
+  "devDependencies": {
+    "@dudubernardino/eslint-config": "^0.0.1",
+    "@faker-js/faker": "^8.4.1",
+    "@rocketseat/eslint-config": "^2.2.2",
+    "@types/bun": "latest",
+    "chalk": "^5.3.0",
+    "drizzle-kit": "^0.23.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-drizzle": "^0.2.3"
+  },
+  "dependencies": {
+    "@paralleldrive/cuid2": "^2.2.2",
+    "drizzle-orm": "^0.32.1",
+    "elysia": "^1.1.4",
+    "postgres": "^3.4.4",
+    "zod": "^3.23.8"
+  }
+}

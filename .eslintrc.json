@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "@dudubernardino/eslint-config/node",
+    "plugin:drizzle/all"
+  ],
+  "plugins": [
+    "drizzle"
+  ],
+  "rules": {
+    "no-useless-constructor": "off"
+  }
+}
