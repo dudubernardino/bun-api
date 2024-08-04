@@ -1,22 +1,22 @@
-import { eres } from '@/libs/utils'
-import type { User } from '../entities/user'
-import type { UsersRepository } from '../repositories/users-repository'
-import { UserNotFoundError } from './errors/user-not-found-error'
+import { eres } from "@/libs/utils";
+import type { User } from "../entities/user";
+import type { UsersRepository } from "../repositories/users-repository";
+import { UserNotFoundError } from "./errors/user-not-found-error";
 
 type Request = {
-  userId: string
-}
+  id: string;
+};
 
 export class GetUserByIdUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute(params: Request): Promise<User> {
-    const { userId } = params
+    const { id } = params;
 
-    const [error, user] = await eres(this.usersRepository.findById(userId))
+    const [error, user] = await eres(this.usersRepository.findById(id));
 
-    if (error || !user) throw new UserNotFoundError()
+    if (error || !user) throw new UserNotFoundError();
 
-    return user
+    return user;
   }
 }
