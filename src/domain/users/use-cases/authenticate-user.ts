@@ -4,18 +4,21 @@ import type { UsersRepository } from '../repositories/users-repository'
 import { UserNotFoundError } from './errors/user-not-found-error'
 
 type Request = {
-  id: string
+  email: string
+  password: string
 }
 
-export class GetUserByIdUseCase {
+export class AuthenticateUserUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute(params: Request): Promise<User> {
-    const { id } = params
+    const { email } = params
 
-    const [error, user] = await eres(this.usersRepository.findById(id))
+    const [error, user] = await eres(this.usersRepository.findByEmail(email))
 
     if (error || !user) throw new UserNotFoundError()
+
+    // TODO: verify password
 
     return user
   }

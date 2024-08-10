@@ -2,7 +2,7 @@ import type { User } from '@/domain/users/entities/user'
 import type { UsersRepository } from '@/domain/users/repositories/users-repository'
 
 import { db } from '../connection'
-import { DrizzleUserMapper } from '../mappers'
+import { DrizzleUserMapper } from '../mappers/drizzle-user-mapper'
 import { users } from '../schema'
 
 export class DrizzleUsersRepository implements UsersRepository {
@@ -17,6 +17,18 @@ export class DrizzleUsersRepository implements UsersRepository {
     const user = await db.query.users.findFirst({
       where(fields, { eq }) {
         return eq(fields.id, id)
+      },
+    })
+
+    if (!user) return null
+
+    return DrizzleUserMapper.toDomain(user)
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await db.query.users.findFirst({
+      where(fields, { eq }) {
+        return eq(fields.email, email)
       },
     })
 

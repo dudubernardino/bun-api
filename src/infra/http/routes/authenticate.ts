@@ -1,30 +1,42 @@
-import { db } from "@/infra/database/drizzle/connection";
-import Elysia, { t } from "elysia";
-import { auth } from "../middlewares/auth";
+import { makeAuthenticateUserUseCase } from '@/infra/factories/users/make-authenticate-user'
+import { eres } from '@/libs/utils'
+import Elysia, { t } from 'elysia'
+import { UnauthorizedError } from '../errors/unauthorized-error'
+import { auth } from '../middlewares/auth'
+import { logger } from '../middlewares/logger'
 
-export const authRoutes = new Elysia({ prefix: "/auth" }).use(auth).post(
-  "/",
-  async ({ body, signUser }) => {
-    const user = await db.query.users.findFirst({
-      where(fields, { eq }) {
-        return eq(fields.email, body.email);
-      },
-    });
+export const authRoutes = new Elysia({ prefix: '/auth' })
+  .use(logger)
+  .use(auth)
+  .post(
+    '/',
+    async ({ body, signUser, logger, set }) => {
+      const { email, password } = body
 
-    if (!user) throw new Error("User Not Found");
+      const authenticateUserUseCase = makeAuthenticateUserUseCase()
 
-    const token = await signUser({
-      sub: user.id,
-      name: user.name,
-      role: user.role,
-    });
+      const [error, user] = await eres(
+        authenticateUserUseCase.execute({ email, password }),
+      )
 
-    return { accessToken: token };
-  },
-  {
-    body: t.Object({
-      email: t.String({ format: "email" }),
-      password: t.String(),
-    }),
-  },
-);
+      if (error || !user) {
+        logger.error(`User does not exist - ${email}`)
+        throw new UnauthorizedError()
+      }
+
+      const token = await signUser({
+        sub: user.id,
+        name: user.name,
+        role: user.role,
+      })
+
+      set.status = 201
+      return { accessToken: token }
+    },
+    {
+      body: t.Object({
+        email: t.String({ format: 'email' }),
+        password: t.String(),
+      }),
+    },
+  )

@@ -3,7 +3,7 @@ import { Entity } from '@/core/entities/entity'
 import type { UserRole } from '@/infra/database/drizzle/schema'
 
 export type UserProps = {
-  name: string | null
+  name: string
   email: string
   password: string
   role: UserRole
