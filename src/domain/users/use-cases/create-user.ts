@@ -17,7 +17,7 @@ type Request = {
 export class CreateUserUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute(request: Request) {
+  async execute(request: Request): Promise<User> {
     const { name, email, password, role } = request.body
 
     const [error, userAlreadyExists] = await eres(
@@ -28,7 +28,13 @@ export class CreateUserUseCase {
     const hasher = new BunHasher()
     const hashedPassword = await hasher.hash(password)
 
-    const user = User.create({ name, email, password: hashedPassword, role })
+    const user = User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+      updatedAt: null,
+    })
 
     const [createUserError] = await eres(this.usersRepository.create(user))
     if (createUserError) throw new CreateUserError()

@@ -34,13 +34,21 @@ describe('CreateUserUseCase', () => {
   })
 
   it('should throw an error if fails to create the user', async () => {
-    spyOn(usersRepository, 'create').mockRejectedValueOnce(new Error())
+    // idk why it didn't work with `mockRejectedValueOnce`
+    spyOn(usersRepository, 'create').mockImplementationOnce(async () => {
+      throw new Error()
+    })
     expect(sut.execute({ body })).rejects.toBeInstanceOf(CreateUserError)
   })
 
   it('should crate a user successfully', async () => {
+    spyOn(usersRepository, 'findByEmail')
+    spyOn(usersRepository, 'create')
+
     const result = await sut.execute({ body })
 
+    expect(usersRepository.findByEmail).toBeCalledTimes(1)
+    expect(usersRepository.create).toBeCalledTimes(1)
     expect(result).toEqual(
       expect.objectContaining({
         id: expect.any(String),

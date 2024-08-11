@@ -24,4 +24,8 @@ export class InMemoryUsersRepository implements UsersRepository {
 
     return user
   }
+
+  async findMany(): Promise<User[] | []> {
+    return this.items
+  }
 }

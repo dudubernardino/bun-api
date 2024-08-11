@@ -1,6 +1,10 @@
 import type { User } from '@/domain/users/entities/user'
-import type { UsersRepository } from '@/domain/users/repositories/users-repository'
+import type {
+  FindManyFilters,
+  UsersRepository,
+} from '@/domain/users/repositories/users-repository'
 
+import { and, eq, ilike, type SQLWrapper } from 'drizzle-orm'
 import { db } from '../connection'
 import { DrizzleUserMapper } from '../mappers/drizzle-user-mapper'
 import { users } from '../schema'
@@ -35,5 +39,31 @@ export class DrizzleUsersRepository implements UsersRepository {
     if (!user) return null
 
     return DrizzleUserMapper.toDomain(user)
+  }
+
+  async findMany(filters?: FindManyFilters): Promise<User[] | []> {
+    const filter: SQLWrapper[] = []
+
+    if (filters?.id) {
+      filter.push(eq(users.id, filters.id))
+    }
+
+    if (filters?.name) {
+      filter.push(ilike(users.name, `%${filters.name}%`))
+    }
+
+    if (filters?.email) {
+      filter.push(ilike(users.email, `%${filters.email}%`))
+    }
+
+    if (filters?.role) {
+      filter.push(eq(users.role, filters.role))
+    }
+
+    const result = await db.query.users.findMany({
+      where: and(...filter),
+    })
+
+    return result.map((user) => DrizzleUserMapper.toDomain(user))
   }
 }

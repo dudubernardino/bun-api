@@ -24,8 +24,11 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
           { error: error?.message },
           `Something went wrong verifying user credentials - ${email}`,
         )
+        set.status = 401
         throw new UnauthorizedError()
       }
+
+      logger.log(`login email: ${email} is valid: true`)
 
       const token = await signUser({
         sub: user.id,

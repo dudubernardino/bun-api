@@ -8,15 +8,18 @@ export type UserProps = {
   password: string
   role: UserRole
   createdAt: Date
-  updatedAt?: Date | null
+  updatedAt: Date | null
 }
 
 export class User extends Entity<UserProps> {
-  static create(props: Optional<UserProps, 'createdAt'>): User {
-    const user = new User({
-      createdAt: props.createdAt ?? new Date(),
-      ...props,
-    })
+  static create(props: Optional<UserProps, 'createdAt'>, id?: string): User {
+    const user = new User(
+      {
+        createdAt: props.createdAt ?? new Date(),
+        ...props,
+      },
+      id,
+    )
     return user
   }
 
