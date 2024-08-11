@@ -1,5 +1,5 @@
 import type { User } from '../entities/user'
-import type { UsersRepository } from './users-repository'
+import type { UpdateUserDto, UsersRepository } from './users-repository'
 
 export class InMemoryUsersRepository implements UsersRepository {
   public items: User[] = []
@@ -27,5 +27,15 @@ export class InMemoryUsersRepository implements UsersRepository {
 
   async findMany(): Promise<User[] | []> {
     return this.items
+  }
+
+  async update(id: string, payload: UpdateUserDto): Promise<User | null> {
+    const user = this.items.findIndex((item) => item.id === id)
+
+    if (user < 0) return null
+
+    this.items[user] = { ...this.items[user], ...payload } as User
+
+    return this.items[user]
   }
 }

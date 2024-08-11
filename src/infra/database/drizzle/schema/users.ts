@@ -18,5 +18,5 @@ export const users = pgTable('users', {
   password: text('password').notNull(),
   role: userRoleEnum('role').default(UserRole.MANAGER).notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at'),
+  updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
 })

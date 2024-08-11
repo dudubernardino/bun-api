@@ -1,1 +1,5 @@
+export * from './make-authenticate-user'
+export * from './make-create-user'
 export * from './make-get-user-by-id'
+export * from './make-get-users'
+export * from './make-update-user'

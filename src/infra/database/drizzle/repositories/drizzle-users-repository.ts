@@ -1,6 +1,7 @@
 import type { User } from '@/domain/users/entities/user'
 import type {
   FindManyFilters,
+  UpdateUserDto,
   UsersRepository,
 } from '@/domain/users/repositories/users-repository'
 
@@ -65,5 +66,17 @@ export class DrizzleUsersRepository implements UsersRepository {
     })
 
     return result.map((user) => DrizzleUserMapper.toDomain(user))
+  }
+
+  async update(id: string, user: UpdateUserDto): Promise<User | null> {
+    const [updatedUser] = await db
+      .update(users)
+      .set(user)
+      .where(eq(users.id, id))
+      .returning()
+
+    if (!updatedUser) return null
+
+    return DrizzleUserMapper.toDomain(updatedUser)
   }
 }

@@ -1,7 +1,10 @@
 import { UserRole } from '@/infra/database/drizzle'
-import { makeGetUserByIdUseCase } from '@/infra/factories/users'
-import { makeCreateUserUseCase } from '@/infra/factories/users/make-create-user'
-import { makeGetUsersUseCase } from '@/infra/factories/users/make-get-users'
+import {
+  makeCreateUserUseCase,
+  makeGetUserByIdUseCase,
+  makeGetUsersUseCase,
+  makeUpdateUserUseCase,
+} from '@/infra/factories/users'
 import { eres } from '@/libs/utils'
 import Elysia, { t } from 'elysia'
 import { UnauthorizedError } from '../errors/unauthorized-error'
@@ -120,6 +123,46 @@ export const userRoutes = new Elysia({ prefix: '/users' })
     {
       params: t.Object({
         id: t.String(),
+      }),
+    },
+  )
+  .patch(
+    '/:id',
+    async ({ params: { id }, body, logger, set }) => {
+      const updateUserUseCase = makeUpdateUserUseCase()
+
+      const [error, result] = await eres(
+        updateUserUseCase.execute({ id, body }),
+      )
+
+      if (error) {
+        logger.error(
+          { error: error?.message },
+          `Something went wrong when trying to update the user - ${id}`,
+        )
+        set.status = 422
+        throw new UnprocessableEntityError()
+      }
+
+      set.status = 200
+      return UserPresenter.toHTTP(result)
+    },
+    {
+      params: t.Object({
+        id: t.String(),
+      }),
+      body: t.Object({
+        name: t.Optional(t.String()),
+        email: t.Optional(t.String({ format: 'email' })),
+        password: t.Optional(
+          t.String({
+            pattern:
+              '/^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])[ -~]{8,}$/',
+            error:
+              'password must contain at least one number, one lowercase letter, one uppercase letter, one special character ($, *, &, @, or #), and have a minimum length of 8 characters',
+          }),
+        ),
+        confirmPassword: t.Optional(t.String()),
       }),
     },
   )

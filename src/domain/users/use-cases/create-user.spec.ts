@@ -28,6 +28,7 @@ describe('CreateUserUseCase', () => {
       name: 'userName',
       email: 'user@email.com',
       password: 'secret',
+      role: 'MANAGER',
     } as User)
 
     expect(sut.execute({ body })).rejects.toBeInstanceOf(UserAlreadyExistsError)
