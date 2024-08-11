@@ -1,8 +1,13 @@
+/* eslint-disable no-console */
 import { Elysia } from 'elysia'
-import { userRoutes } from './routes/users/routes'
+import { env } from '../env'
+import { validatorHandler } from './middlewares/validator-handler'
+import { authRoutes, userRoutes } from './routes'
 
-const app = new Elysia().use(userRoutes)
+const app = new Elysia().use(validatorHandler).use(authRoutes).use(userRoutes)
 
-app.listen(3333, () => {
-  console.log('HTTP server running!')
-})
+app.listen(env.PORT, () =>
+  console.log(
+    `🦊 Server is running at ${app.server?.hostname}:${app.server?.port}`,
+  ),
+)

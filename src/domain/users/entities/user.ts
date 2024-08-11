@@ -3,7 +3,7 @@ import { Entity } from '@/core/entities/entity'
 import type { UserRole } from '@/infra/database/drizzle/schema'
 
 export type UserProps = {
-  name: string | null
+  name: string
   email: string
   password: string
   role: UserRole
@@ -12,11 +12,14 @@ export type UserProps = {
 }
 
 export class User extends Entity<UserProps> {
-  static create(props: Optional<UserProps, 'createdAt'>): User {
-    const user = new User({
-      createdAt: props.createdAt ?? new Date(),
-      ...props,
-    })
+  static create(props: Optional<UserProps, 'createdAt'>, id?: string): User {
+    const user = new User(
+      {
+        createdAt: props.createdAt ?? new Date(),
+        ...props,
+      },
+      id,
+    )
     return user
   }
 

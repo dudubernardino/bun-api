@@ -1,0 +1,103 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 696b8979c17e5a28c334256a0ac8957377f204fe..20ebb510cf83f3424013fddb15080435e4aea831 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -1,6 +1,6 @@
+-import { Elysia } from 'elysia';
+-import { type JWTPayload, type JWSHeaderParameters, type KeyLike } from 'jose';
+ import type { Static, TSchema } from '@sinclair/typebox';
++import { Elysia } from 'elysia';
++import { type JWSHeaderParameters, type JWTPayload, type KeyLike } from 'jose';
+ type UnwrapSchema<Schema extends TSchema | undefined, Fallback = unknown> = Schema extends TSchema ? Static<NonNullable<Schema>> : Fallback;
+ export interface JWTPayloadSpec {
+     iss?: string;
+@@ -32,9 +32,19 @@ export interface JWTOption<Name extends string | undefined = 'jwt', Schema exten
+      */
+     name?: Name;
+     /**
+-     * JWT Secret
++     * Only `secret` or both `privateKey`, `publicKey` must be set
++     */
++    secret?: string | Uint8Array | KeyLike;
++    /**
++     * JWT Private Key
++     * Only `secret` or both `privateKey`, `publicKey` must be set
++     */
++    privateKey?: Uint8Array | KeyLike
++    /**
++     * JWT Public Key
++     * Only `secret` or both `privateKey`, `publicKey` must be set
+      */
+-    secret: string | Uint8Array | KeyLike;
++    publicKey?: Uint8Array | KeyLike
+     /**
+      * Type strict validation for JWT payload
+      */
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 7733956f12aeaa26df915e589134eb557aeaede3..05f07bb76bd64c553ee10dad54f840c13501304e 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -2376,6 +2376,8 @@ var Type = type_exports3;
+ var jwt = ({
+   name = "jwt",
+   secret,
++  publicKey,
++  privateKey,
+   // Start JWT Header
+   alg = "HS256",
+   crit,
+@@ -2386,8 +2388,25 @@ var jwt = ({
+   exp,
+   ...payload
+ }) => {
+-  if (!secret) throw new Error("Secret can't be empty");
+   const key = typeof secret === "string" ? new TextEncoder().encode(secret) : secret;
++  let asymmetric = false
++
++  if (secret && (privateKey || publicKey)) {
++    throw new Error("When using asymmetric algorithm, only `privateKey` and `publicKey` is accepted")
++  }
++
++  if (privateKey && !publicKey) {
++    throw new Error("When using asymmetric algorithm, both `privateKey` and `publicKey` must be set. Public key is missing")
++  }
++
++  if (publicKey && !privateKey) {
++    throw new Error("When using asymmetric algorithm, both `privateKey` and `publicKey` must be set. Private key is missing")
++  }
++
++  if (privateKey && privateKey) asymmetric = true
++
++  if (!asymmetric && !secret) throw new Error("Secret can't be empty")
++
+   const validator = schema ? getSchemaValidator(
+     Type.Intersect([
+       schema,
+@@ -2430,12 +2449,12 @@ var jwt = ({
+       });
+       if (nbf) jwt2 = jwt2.setNotBefore(nbf);
+       if (exp) jwt2 = jwt2.setExpirationTime(exp);
+-      return jwt2.sign(key);
++      return jwt2.sign(asymmetric ? privateKey : key);
+     },
+     async verify(jwt2) {
+       if (!jwt2) return false;
+       try {
+-        const data = (await jwtVerify(jwt2, key)).payload;
++        const data = (await jwtVerify(jwt2, asymmetric ? publicKey : key)).payload;
+         if (validator && !validator.Check(data))
+           throw new ValidationError("JWT", validator, data);
+         return data;
+diff --git a/package.json b/package.json
+index e39e2f585622697d2445fd5b9a771d3423c972de..b16d79d29527879af1cc49d46e7c2a05e5b99635 100644
+--- a/package.json
++++ b/package.json
+@@ -39,7 +39,7 @@
+         "release": "npm run build && npm run test && npm publish --access public"
+     },
+     "dependencies": {
+-        "jose": "^4.14.4"
++        "jose": "^5.2.3"
+     },
+     "devDependencies": {
+         "@types/bun": "1.1.6",

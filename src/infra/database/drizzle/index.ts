@@ -1,3 +1,2 @@
-export * from './mappers'
-export * from './repositories'
+export * from './connection'
 export * from './schema'
