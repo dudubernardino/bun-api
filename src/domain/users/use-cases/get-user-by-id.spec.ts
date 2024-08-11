@@ -15,7 +15,6 @@ describe('GetUserByIdUseCase', () => {
 
   it('should throw an error if fails', async () => {
     spyOn(usersRepository, 'findById').mockRejectedValueOnce(new Error())
-
     expect(sut.execute({ id: 'id' })).rejects.toBeInstanceOf(UserNotFoundError)
   })
 
@@ -29,9 +28,10 @@ describe('GetUserByIdUseCase', () => {
       name: 'userName',
       email: 'user@email.com',
       password: 'secret',
+      role: 'MANAGER',
     } as User)
 
-    const result = await sut.execute({ id: 'id' })
+    const result = await sut.execute({ id: 'userId' })
 
     expect(result).toEqual(
       expect.objectContaining({
@@ -39,6 +39,7 @@ describe('GetUserByIdUseCase', () => {
         name: expect.any(String),
         email: expect.any(String),
         password: expect.any(String),
+        role: expect.any(String),
       }),
     )
   })

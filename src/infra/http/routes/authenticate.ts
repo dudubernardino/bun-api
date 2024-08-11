@@ -19,8 +19,11 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
         authenticateUserUseCase.execute({ email, password }),
       )
 
-      if (error || !user) {
-        logger.error(`User does not exist - ${email}`)
+      if (error) {
+        logger.error(
+          { error: error?.message },
+          `Something went wrong verifying user credentials - ${email}`,
+        )
         throw new UnauthorizedError()
       }
 

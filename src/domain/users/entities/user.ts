@@ -8,7 +8,7 @@ export type UserProps = {
   password: string
   role: UserRole
   createdAt: Date
-  updatedAt: Date | null
+  updatedAt?: Date | null
 }
 
 export class User extends Entity<UserProps> {

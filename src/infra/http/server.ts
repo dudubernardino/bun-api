@@ -2,12 +2,14 @@
 import { Elysia } from 'elysia'
 import { env } from '../env'
 import { UnauthorizedError } from './errors/unauthorized-error'
+import { UnprocessableEntityError } from './errors/unprocessable-entity-error'
 import { authRoutes, userRoutes } from './routes'
 
 const app = new Elysia()
   // TODO: create a validation-handler
   .error({
     UNAUTHORIZED: UnauthorizedError,
+    UNPROCESSABLE_ENTITY: UnprocessableEntityError,
   })
   .onError(({ code, error, set, store }) => {
     switch (code) {
@@ -17,11 +19,17 @@ const app = new Elysia()
         store.hasError = true
         return { code, message: error.message }
       }
+      case 'UNPROCESSABLE_ENTITY': {
+        set.status = 422
+        // @ts-expect-error assign store object property
+        store.hasError = true
+        return { code, message: error.message }
+      }
       case 'VALIDATION': {
         set.status = 400
         // @ts-expect-error assign store object property
         store.hasError = true
-        return { error: error.all }
+        return error.toResponse()
       }
       default: {
         set.status = 500

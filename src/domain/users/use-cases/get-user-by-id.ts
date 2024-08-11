@@ -14,7 +14,6 @@ export class GetUserByIdUseCase {
     const { id } = params
 
     const [error, user] = await eres(this.usersRepository.findById(id))
-
     if (error || !user) throw new UserNotFoundError()
 
     return user
