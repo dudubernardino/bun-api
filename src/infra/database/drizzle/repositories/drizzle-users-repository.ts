@@ -71,7 +71,7 @@ export class DrizzleUsersRepository implements UsersRepository {
   async update(id: string, user: UpdateUserDto): Promise<User | null> {
     const [updatedUser] = await db
       .update(users)
-      .set({ updatedAt: new Date(), ...user })
+      .set(user)
       .where(eq(users.id, id))
       .returning()
 
