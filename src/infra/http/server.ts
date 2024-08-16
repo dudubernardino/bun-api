@@ -12,3 +12,5 @@ app.listen(env.PORT, () =>
     `🦊 Server is running at ${app.server?.hostname}:${app.server?.port}`,
   ),
 )
+
+export { app }

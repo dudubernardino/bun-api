@@ -14,7 +14,6 @@ import { auth } from '../middlewares/auth'
 import { logger } from '../middlewares/logger'
 import { UserPresenter } from '../presenters/user-presenter'
 
-// TODO: block unauthenticated users
 export const userRoutes = new Elysia({ prefix: '/users' })
   .use(logger)
   .use(auth)
@@ -41,7 +40,9 @@ export const userRoutes = new Elysia({ prefix: '/users' })
   })
   .post(
     '/',
-    async ({ body, logger, set }) => {
+    async ({ getCurrentUser, body, logger, set }) => {
+      await getCurrentUser()
+
       const createUserUseCase = makeCreateUserUseCase()
 
       const [error, result] = await eres(createUserUseCase.execute({ body }))
@@ -74,7 +75,9 @@ export const userRoutes = new Elysia({ prefix: '/users' })
   )
   .get(
     '/',
-    async ({ query, logger, set }) => {
+    async ({ getCurrentUser, query, logger, set }) => {
+      await getCurrentUser()
+
       const getUsersUseCase = makeGetUsersUseCase()
 
       const [error, result] = await eres(getUsersUseCase.execute(query))
@@ -103,7 +106,9 @@ export const userRoutes = new Elysia({ prefix: '/users' })
   )
   .get(
     '/:id',
-    async ({ params: { id }, logger, set }) => {
+    async ({ getCurrentUser, params: { id }, logger, set }) => {
+      await getCurrentUser()
+
       const getUserByIdUserCase = makeGetUserByIdUseCase()
 
       const [error, result] = await eres(getUserByIdUserCase.execute({ id }))
@@ -128,7 +133,9 @@ export const userRoutes = new Elysia({ prefix: '/users' })
   )
   .patch(
     '/:id',
-    async ({ params: { id }, body, logger, set }) => {
+    async ({ getCurrentUser, params: { id }, body, logger, set }) => {
+      await getCurrentUser()
+
       const updateUserUseCase = makeUpdateUserUseCase()
 
       const [error, result] = await eres(
