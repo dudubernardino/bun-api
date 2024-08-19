@@ -2,6 +2,7 @@ import Elysia, { ValidationError } from 'elysia'
 import { match } from 'ts-pattern'
 import { UnauthorizedError } from '../errors/unauthorized-error'
 import { UnprocessableEntityError } from '../errors/unprocessable-entity-error'
+import { UserNotFoundError } from '../errors/user-not-found'
 
 const mapValidationError = (error: ValidationError) =>
   error.all.map((error) => {
@@ -15,6 +16,7 @@ export const validatorHandler = new Elysia({ name: 'validator-hanlder' })
   .error({
     UNAUTHORIZED: UnauthorizedError,
     UNPROCESSABLE_ENTITY: UnprocessableEntityError,
+    USER_NOT_FOUND: UserNotFoundError,
   })
   .onError({ as: 'global' }, ({ request, code, error, set, store }) => {
     return match({ request, code, error, set, store })
@@ -47,6 +49,19 @@ export const validatorHandler = new Elysia({ name: 'validator-hanlder' })
           }
         },
       )
+      .with({ code: 'USER_NOT_FOUND' }, ({ request, set, store, error }) => {
+        // @ts-expect-error assign store object property
+        store.hasError = true
+
+        return {
+          code,
+          message: [error.message],
+          method: request.method,
+          path: request.url,
+          statusCode: set.status || 404,
+          timestamp: new Date()?.toISOString(),
+        }
+      })
       .with({ code: 'VALIDATION' }, ({ request, set, store, error }) => {
         // @ts-expect-error assign store object property
         store.hasError = true

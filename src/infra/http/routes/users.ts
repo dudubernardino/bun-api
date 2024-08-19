@@ -40,9 +40,7 @@ export const userRoutes = new Elysia({ prefix: '/users' })
   })
   .post(
     '/',
-    async ({ getCurrentUser, body, logger, set }) => {
-      await getCurrentUser()
-
+    async ({ body, logger, set }) => {
       const createUserUseCase = makeCreateUserUseCase()
 
       const [error, result] = await eres(createUserUseCase.execute({ body }))
@@ -63,12 +61,13 @@ export const userRoutes = new Elysia({ prefix: '/users' })
       body: t.Object({
         name: t.String(),
         email: t.String({ format: 'email' }),
-        password: t.String({
-          pattern:
-            '/^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])[ -~]{8,}$/',
-          error:
-            'password must contain at least one number, one lowercase letter, one uppercase letter, one special character ($, *, &, @, or #), and have a minimum length of 8 characters',
-        }),
+        password: t.RegExp(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])[ -~]{8,}$/,
+          {
+            error:
+              'password must contain at least one number, one lowercase letter, one uppercase letter, one special character ($, *, &, @, or #), and have a minimum length of 8 characters',
+          },
+        ),
         role: t.Enum({ MANAGER: UserRole.MANAGER }),
       }),
     },
@@ -162,12 +161,13 @@ export const userRoutes = new Elysia({ prefix: '/users' })
         name: t.Optional(t.String()),
         email: t.Optional(t.String({ format: 'email' })),
         password: t.Optional(
-          t.String({
-            pattern:
-              '/^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])[ -~]{8,}$/',
-            error:
-              'password must contain at least one number, one lowercase letter, one uppercase letter, one special character ($, *, &, @, or #), and have a minimum length of 8 characters',
-          }),
+          t.RegExp(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])[ -~]{8,}$/,
+            {
+              error:
+                'password must contain at least one number, one lowercase letter, one uppercase letter, one special character ($, *, &, @, or #), and have a minimum length of 8 characters',
+            },
+          ),
         ),
         confirmPassword: t.Optional(t.String()),
       }),
