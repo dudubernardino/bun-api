@@ -9,7 +9,7 @@ describe('Users (e2e)', () => {
       new Request('http://localhost/auth', {
         method: 'POST',
         body: JSON.stringify({
-          email: 'eduardomoura.moura@gmail.com',
+          email: 'admin@admin.com',
           password: 'secret',
         }),
         headers: {

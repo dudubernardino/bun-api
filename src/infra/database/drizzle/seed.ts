@@ -1,6 +1,7 @@
 /* eslint-disable drizzle/enforce-delete-with-where */
 /* eslint-disable no-console */
 
+import { BunHasher } from '@/libs/utils'
 import { fakerPT_BR as faker } from '@faker-js/faker'
 import chalk from 'chalk'
 import { db } from './connection'
@@ -12,20 +13,34 @@ async function resetDatabase() {
   console.log(chalk.yellow('✓ Database reset!'))
 }
 
+async function hashPassword(password: string) {
+  const hasher = new BunHasher()
+  const hashedPassword = await hasher.hash(password)
+  return hashedPassword
+}
+
 async function createUsers() {
+  const password = await hashPassword('secret')
+
   const [userAdmin, userManager] = await db
     .insert(users)
     .values([
       {
         name: faker.person.fullName(),
-        email: faker.internet.email().toLocaleLowerCase(),
-        password: 'secret',
+        email: 'admin@admin.com',
+        password,
         role: UserRole.ADMIN,
       },
       {
         name: faker.person.fullName(),
         email: faker.internet.email().toLocaleLowerCase(),
-        password: 'secret',
+        password,
+        role: UserRole.ADMIN,
+      },
+      {
+        name: faker.person.fullName(),
+        email: faker.internet.email().toLocaleLowerCase(),
+        password,
         role: UserRole.MANAGER,
       },
     ])
