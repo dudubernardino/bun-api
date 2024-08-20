@@ -11,7 +11,7 @@ const app = new Elysia()
   .use(authRoutes)
   .use(userRoutes)
 
-app.listen(env.PORT, () =>
+app.listen(env.PORT || 3000, () =>
   console.log(
     `🦊 Server is running at ${app.server?.hostname}:${app.server?.port}`,
   ),
