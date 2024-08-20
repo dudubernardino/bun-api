@@ -14,7 +14,6 @@ import { auth } from '../middlewares/auth'
 import { logger } from '../middlewares/logger'
 import { UserPresenter } from '../presenters/user-presenter'
 
-// TODO: block unauthenticated users
 export const userRoutes = new Elysia({
   prefix: '/users',
   detail: { tags: ['Users'], security: [{ CookieAuth: [] }] },
@@ -65,12 +64,13 @@ export const userRoutes = new Elysia({
       body: t.Object({
         name: t.String(),
         email: t.String({ format: 'email' }),
-        password: t.String({
-          pattern:
-            '/^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])[ -~]{8,}$/',
-          error:
-            'password must contain at least one number, one lowercase letter, one uppercase letter, one special character ($, *, &, @, or #), and have a minimum length of 8 characters',
-        }),
+        password: t.RegExp(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])[ -~]{8,}$/,
+          {
+            error:
+              'password must contain at least one number, one lowercase letter, one uppercase letter, one special character ($, *, &, @, or #), and have a minimum length of 8 characters',
+          },
+        ),
         role: t.Enum({ MANAGER: UserRole.MANAGER }),
       }),
       detail: { security: [] },
@@ -78,7 +78,9 @@ export const userRoutes = new Elysia({
   )
   .get(
     '/',
-    async ({ query, logger, set }) => {
+    async ({ getCurrentUser, query, logger, set }) => {
+      await getCurrentUser()
+
       const getUsersUseCase = makeGetUsersUseCase()
 
       const [error, result] = await eres(getUsersUseCase.execute(query))
@@ -107,7 +109,9 @@ export const userRoutes = new Elysia({
   )
   .get(
     '/:id',
-    async ({ params: { id }, logger, set }) => {
+    async ({ getCurrentUser, params: { id }, logger, set }) => {
+      await getCurrentUser()
+
       const getUserByIdUserCase = makeGetUserByIdUseCase()
 
       const [error, result] = await eres(getUserByIdUserCase.execute({ id }))
@@ -132,7 +136,9 @@ export const userRoutes = new Elysia({
   )
   .patch(
     '/:id',
-    async ({ params: { id }, body, logger, set }) => {
+    async ({ getCurrentUser, params: { id }, body, logger, set }) => {
+      await getCurrentUser()
+
       const updateUserUseCase = makeUpdateUserUseCase()
 
       const [error, result] = await eres(
@@ -159,12 +165,13 @@ export const userRoutes = new Elysia({
         name: t.Optional(t.String()),
         email: t.Optional(t.String({ format: 'email' })),
         password: t.Optional(
-          t.String({
-            pattern:
-              '/^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])[ -~]{8,}$/',
-            error:
-              'password must contain at least one number, one lowercase letter, one uppercase letter, one special character ($, *, &, @, or #), and have a minimum length of 8 characters',
-          }),
+          t.RegExp(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])[ -~]{8,}$/,
+            {
+              error:
+                'password must contain at least one number, one lowercase letter, one uppercase letter, one special character ($, *, &, @, or #), and have a minimum length of 8 characters',
+            },
+          ),
         ),
         confirmPassword: t.Optional(t.String()),
       }),
