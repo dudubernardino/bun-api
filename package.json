@@ -11,7 +11,7 @@
     "db:seed": "bun ./src/infra/database/drizzle/seed.ts",
     "db:studio": "drizzle-kit studio",
     "lint:fix": "eslint --fix src --ext .ts",
-    "test": "bun test src/domain/user-cases",
+    "test:unit": "bun test src/domain",
     "test:e2e": "bun test src/infra/http",
     "prepare": "husky",
     "check:types": "tsc --noEmit"

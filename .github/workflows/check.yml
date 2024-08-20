@@ -23,8 +23,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - name: Install
         run: bun install
-      - name: Collect coverage from @Libs
-        run: bun test
+      - name: Test
+        run: bun test:unit
   app_e2e_tests:
     name: E2E Tests
     needs: check_types
