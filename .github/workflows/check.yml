@@ -5,6 +5,11 @@ on:
     branches-ignore:
       - production
 
+env: 
+  DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/postgres'
+  JWT_PRIVATE_KEY: '${{ secrets.E2E_JWT_PRIVATE_KEY }}'
+  JWT_PUBLIC_KEY: '${{ secrets.E2E_JWT_PUBLIC_KEY }}'
+
 jobs:
   check_types:
     name: The types & styles
@@ -43,10 +48,6 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-    env:
-      DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/postgres'
-      JWT_PRIVATE_KEY: '${{ secrets.E2E_JWT_PRIVATE_KEY }}'
-      JWT_PUBLIC_KEY: '${{ secrets.E2E_JWT_PUBLIC_KEY }}'
     steps:
       - uses: actions/checkout@v3
       - uses: oven-sh/setup-bun@v2
