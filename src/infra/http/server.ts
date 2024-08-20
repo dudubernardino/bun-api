@@ -1,11 +1,15 @@
 /* eslint-disable no-console */
 import { Elysia } from 'elysia'
 import { env } from '../env'
+import { docs } from './middlewares/docs'
 import { validatorHandler } from './middlewares/validator-handler'
 import { authRoutes, userRoutes } from './routes'
 
-// TODO: swagger docs
-const app = new Elysia().use(validatorHandler).use(authRoutes).use(userRoutes)
+const app = new Elysia()
+  .use(docs)
+  .use(validatorHandler)
+  .use(authRoutes)
+  .use(userRoutes)
 
 app.listen(env.PORT, () =>
   console.log(

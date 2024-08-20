@@ -5,7 +5,12 @@ import { UnauthorizedError } from '../errors/unauthorized-error'
 import { auth } from '../middlewares/auth'
 import { logger } from '../middlewares/logger'
 
-export const authRoutes = new Elysia({ prefix: '/auth' })
+export const authRoutes = new Elysia({
+  prefix: '/auth',
+  detail: {
+    tags: ['Auth'],
+  },
+})
   .use(logger)
   .use(auth)
   .post(

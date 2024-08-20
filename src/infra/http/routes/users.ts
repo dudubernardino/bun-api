@@ -15,7 +15,10 @@ import { logger } from '../middlewares/logger'
 import { UserPresenter } from '../presenters/user-presenter'
 
 // TODO: block unauthenticated users
-export const userRoutes = new Elysia({ prefix: '/users' })
+export const userRoutes = new Elysia({
+  prefix: '/users',
+  detail: { tags: ['Users'], security: [{ CookieAuth: [] }] },
+})
   .use(logger)
   .use(auth)
   .get('/me', async ({ getCurrentUser, logger, set }) => {
@@ -70,6 +73,7 @@ export const userRoutes = new Elysia({ prefix: '/users' })
         }),
         role: t.Enum({ MANAGER: UserRole.MANAGER }),
       }),
+      detail: { security: [] },
     },
   )
   .get(
