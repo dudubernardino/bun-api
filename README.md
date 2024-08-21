@@ -23,8 +23,8 @@ Creating an engaging platform for fans to learn about their club's history is es
 
 Technologies that I used to develop this api
 
-- [TypeScript](https://www.typescriptlang.org/)
 - [Bun](https://bun.sh/)
+- [Elysia](https://elysiajs.com/)
 - [Drizzle](https://orm.drizzle.team/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [JWT](https://jwt.io/)
