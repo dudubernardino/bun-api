@@ -30,8 +30,7 @@ Technologies that I used to develop this api
 - [JWT](https://jwt.io/)
 - [Swagger](https://swagger.io/)
 - [Docker](https://www.docker.com/)
-- [Eslint](https://eslint.org/)
-- [Prettier](https://prettier.io/)
+- [Eslint](https://www.npmjs.com/package/@dudubernardino/eslint-config)
 
 ## 💻 Getting started
 
