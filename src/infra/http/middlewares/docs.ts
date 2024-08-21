@@ -6,7 +6,7 @@ export const docs = new Elysia({ name: 'swagger' }).use(
     path: '/docs',
     documentation: {
       info: {
-        title: '🦁 Laionpedia API',
+        title: '🦊 Bun API',
         version: '0.0.1',
       },
       tags: [{ name: 'Auth' }, { name: 'Users' }],
