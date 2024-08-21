@@ -2,7 +2,7 @@
   🦊 Users API Project
 </h3>
 
-<p align="center">An simple rest api for users.</p>
+<p align="center">A simple rest api for users.</p>
 
 <p align="center">
   <a href="#-about-the-project">About the project</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
