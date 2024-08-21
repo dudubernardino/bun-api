@@ -1,23 +1,23 @@
 <h3 align="center">
-  Laionpedia API Project
+  🦊 Users API Project
 </h3>
 
-<p align="center">An rest api for football teams historical data management system. 👨🏼‍💻🦁</p>
+<p align="center">An simple rest api for users.</p>
 
 <p align="center">
   <a href="#-about-the-project">About the project</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-technologies">Technologies</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-getting-started">Getting started</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-docs">Docs</a>
+  <a href="#-docs">Docs</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-how-to-contribute">How to contribute</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-license">License</a>
 </p>
 
 ## 📊 About the project
 
-In recent years, technology has become increasingly relevant in the world of football. One of the key areas where it has been widely utilized is in engaging fans by providing access to historical data, a valuable resource for those looking to deepen their understanding of their favorite club's history. However, current platforms for showcasing historical data often face challenges such as lack of accessibility, limited interactivity, and difficulties in presenting comprehensive information in an engaging manner.
+Users back-end app built with TypeScript, Drizzle a ElysiaJS.
 
-This project aims to develop a historical data platform that addresses these issues, offering fans an immersive and user-friendly experience to explore the rich history of their club, including matches, championships, coaches, executives, and players.
-
-Creating an engaging platform for fans to learn about their club's history is essential for strengthening the connection between the club and its supporters. Additionally, offering innovative solutions for accessibility and interactivity can enhance the fan experience and foster a deeper appreciation for the club's legacy.
+> 🔥 This project aims to keep runtime agnostic, this means it should work on Bun, Node or any Web Standard API compatible runtime.
 
 ## 🚀 Technologies
 
@@ -70,6 +70,39 @@ $ bun dev
 ## 📚 Docs
 
 I used [swagger](https://swagger.io/) to document the API. You can access `/docs`.
+
+## 🤔 How to contribute
+
+**Make a fork of this repository**
+
+```bash
+# Fork using GitHub official command line
+# If you don't have the GitHub CLI, use the web site to do that.
+
+$ gh repo fork dudubernardino/bun-api
+```
+
+**Follow the steps below**
+
+```bash
+# Clone your fork
+$ git clone your-fork-url && cd bun-api
+
+# Create a branch with your feature
+$ git checkout -b my-feature
+
+# Make the commit with your changes
+$ git commit -m 'feat: My new feature'
+
+# Send the code to your remote branch
+$ git push origin my-feature
+```
+
+After your pull request is merged, you can delete your branch
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
