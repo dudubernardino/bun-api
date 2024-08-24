@@ -8,9 +8,9 @@ services:
     environment:
       POSTGRES_USER: docker_user
       POSTGRES_PASSWORD: docker_password
-      POSTGRES_DB: laionpedia_database
+      POSTGRES_DB: bunapi_database
     volumes:
-      - laionpedia_pg_data:/bitnami/postgresql
+      - bunapi_pg_data:/bitnami/postgresql
 
 volumes:
-  laionpedia_pg_data:
+  bunapi_pg_data:
